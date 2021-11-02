@@ -1,0 +1,18 @@
+
+p{
+    color:red;
+    font-size:large;
+}
+
+img{
+    border:2px dashed green;
+}
+#spanid{
+    text-decoration:underline;
+}
+.class1{
+    background-color: royalblue;
+}
+#secondtable:hover{
+    background-color: royalblue;
+}
