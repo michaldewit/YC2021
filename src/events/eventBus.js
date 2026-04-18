@@ -1,4 +1,5 @@
 const amqp = require('amqplib');
+const { validateEvent } = require('./eventSchemas');
 
 const EXCHANGE = 'document_approval_events';
 const RECONNECT_DELAY_MS = 2000;
@@ -40,6 +41,13 @@ class EventBus {
 
   async publish(eventType, payload) {
     if (!this.publishChannel) throw new Error('EventBus not connected');
+
+    const { valid, errors } = validateEvent(eventType, payload);
+    if (!valid) {
+      const detail = errors ? JSON.stringify(errors) : 'unknown';
+      throw new Error(`Event schema validation failed for ${eventType}: ${detail}`);
+    }
+
     const msg = JSON.stringify({ eventType, payload, publishedAt: new Date().toISOString() });
     this.publishChannel.publish(EXCHANGE, eventType, Buffer.from(msg), { persistent: true });
   }
